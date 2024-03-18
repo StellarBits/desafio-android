@@ -8,6 +8,7 @@ import com.picpay.desafio.android.util.SUCCESS
 import com.picpay.desafio.android.util.UNKNOWN_ERROR
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.coroutines.suspendCoroutine
 
@@ -26,7 +27,9 @@ class LocalUserDataSource(private val userDao: UserDao) : UserDataSource {
                         }
                     }
                 } catch (e: Exception) {
-                    continuation.resumeWith(Result.success(Pair(listOf(), e.message ?: UNKNOWN_ERROR)))
+                    if (continuation.context.isActive) {
+                        continuation.resumeWith(Result.success(Pair(listOf(), e.message ?: UNKNOWN_ERROR)))
+                    }
                 }
             }
         }

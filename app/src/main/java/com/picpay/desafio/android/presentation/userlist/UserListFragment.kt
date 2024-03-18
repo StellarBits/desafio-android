@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.picpay.desafio.android.R
 import com.picpay.desafio.android.databinding.FragmentUserListBinding
 import com.picpay.desafio.android.util.NO_DATA_IN_DATABASE_ERROR
+import com.picpay.desafio.android.util.NO_ERROR
 import com.picpay.desafio.android.util.SUCCESS
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -39,30 +41,43 @@ class UserListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setObservers()
         init()
+        setObservers()
+        setListeners()
     }
 
     private fun setObservers() {
-        viewModel.usersList.observe(viewLifecycleOwner) { response ->
-
-            if (response.second == SUCCESS) {
-                // Success
+        viewModel.usersList.observe(viewLifecycleOwner) { users ->
+            if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                binding.usersSwipeRefresh.isRefreshing = false
                 progressBar.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
 
-                userListAdapter.submitList(response.first)
-            } else {
-                // Failure
+                userListAdapter.submitList(users)
+            }
+        }
+
+        viewModel.getUsersListError.observe(viewLifecycleOwner) { response ->
+            if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 val message =
-                    if (response.second == NO_DATA_IN_DATABASE_ERROR)
+                    if (response == NO_DATA_IN_DATABASE_ERROR)
                         getString(R.string.local_error)
                     else
                         getString(R.string.generic_error)
 
+                binding.usersSwipeRefresh.isRefreshing = false
                 progressBar.visibility = View.GONE
                 recyclerView.visibility = View.GONE
 
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setListeners() {
+        with(binding) {
+            usersSwipeRefresh.setOnRefreshListener {
+                getUsers()
             }
         }
     }
@@ -78,11 +93,15 @@ class UserListFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        if (viewModel.usersList.value?.first.isNullOrEmpty()) {
+        if (viewModel.getUsersListError.value == NO_ERROR) {
             progressBar.visibility = View.VISIBLE
-            viewModel.getUsers()
+            getUsers()
         } else {
-            userListAdapter.submitList(viewModel.usersList.value?.first)
+            userListAdapter.submitList(viewModel.usersList.value)
         }
+    }
+
+    private fun getUsers() {
+        viewModel.getUsers()
     }
 }

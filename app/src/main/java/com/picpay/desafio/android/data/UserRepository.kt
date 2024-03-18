@@ -11,18 +11,18 @@ class UserRepository(
     private val userDao: UserDao
 ) {
     suspend fun getUsers(): Pair<List<User>, String> {
-        return if (remoteDataSource.getUsers().second != SUCCESS)
-            localDataSource.getUsers()
+        var response = remoteDataSource.getUsers()
+
+        if (response.second != SUCCESS)
+            response = localDataSource.getUsers()
         else {
-            val users = remoteDataSource.getUsers()
-
-            if (users.first.isNotEmpty()) {
+            if (response.first.isNotEmpty()) {
                 deleteUsers()
-                setUsers(users.first)
+                setUsers(response.first)
             }
-
-            users
         }
+
+        return response
     }
 
     private suspend fun deleteUsers() {

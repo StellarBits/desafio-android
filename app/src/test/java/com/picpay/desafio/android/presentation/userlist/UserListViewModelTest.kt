@@ -3,7 +3,9 @@ package com.picpay.desafio.android.presentation.userlist
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
 import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.domain.usecase.GetUsersUseCase
@@ -29,7 +31,7 @@ class UserListViewModelTest {
 
     private val getUsersUseCase = mock<GetUsersUseCase>()
     private val viewModel = UserListViewModel(getUsersUseCase)
-    private val usersListObserver = mock<Observer<Pair<List<User>, String>>>()
+    private val usersListObserver = mock<Observer<List<User>>>()
 
     @Before
     fun setup() {
@@ -53,7 +55,7 @@ class UserListViewModelTest {
                 testDispatcher.scheduler.advanceUntilIdle()
 
                 // Then | Assert
-                verify(usersListObserver).onChanged(expectedUsers)
+                verify(usersListObserver).onChanged(expectedUsers.first)
             }
         }
     }
@@ -74,7 +76,7 @@ class UserListViewModelTest {
                 testDispatcher.scheduler.advanceUntilIdle()
 
                 // Then | Assert
-                verify(usersListObserver).onChanged(expectedUsers)
+                verify(usersListObserver, times(0)).onChanged(expectedUsers.first)
             }
         }
     }
