@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import com.picpay.desafio.android.data.local.dao.UserDao
 import com.picpay.desafio.android.domain.model.User
 
+const val DATABASE = "picpay.db"
 
 @Database(
     version = 1,
@@ -24,7 +25,7 @@ abstract class AppDatabase: RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context,
-                    AppDatabase::class.java, "picpay.db")
+                    AppDatabase::class.java, DATABASE)
                     .build()
                 INSTANCE = instance
 

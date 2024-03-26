@@ -2,8 +2,8 @@ package com.picpay.desafio.android.domain.usecase
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.data.UserRepository
 import com.picpay.desafio.android.domain.model.User
+import com.picpay.desafio.android.domain.repository.UserRepository
 import com.picpay.desafio.android.factory.UserFactory
 import com.picpay.desafio.android.util.SUCCESS
 import kotlinx.coroutines.test.runTest
@@ -12,8 +12,8 @@ import org.junit.Test
 
 class GetUsersUseCaseImplTest {
 
-    private val userRepository = mock<UserRepository>()
-    private val getUsersUseCaseImpl = GetUsersUseCaseImpl(userRepository)
+    private val userRepositoryImpl = mock<UserRepository>()
+    private val getUsersUseCaseImpl = GetUsersUseCaseImpl(userRepositoryImpl)
 
     @Test
     fun getUsers_from_local_return_list_with_success() {
@@ -21,7 +21,7 @@ class GetUsersUseCaseImplTest {
             // Given | Arrange
             val expectedUsers = Pair(UserFactory.users, SUCCESS)
 
-            whenever(userRepository.getUsers()).thenReturn(expectedUsers)
+            whenever(userRepositoryImpl.getUsers()).thenReturn(expectedUsers)
 
             // When | Act
             val actualResponse = getUsersUseCaseImpl()
@@ -37,7 +37,7 @@ class GetUsersUseCaseImplTest {
             // Given | Arrange
             val expectedUsers = Pair(listOf<User>(), "")
 
-            whenever(userRepository.getUsers()).thenReturn(expectedUsers)
+            whenever(userRepositoryImpl.getUsers()).thenReturn(expectedUsers)
 
             // When | Act
             val actualResponse = getUsersUseCaseImpl()

@@ -1,16 +1,17 @@
 package com.picpay.desafio.android.data
 
 import com.picpay.desafio.android.data.local.dao.UserDao
+import com.picpay.desafio.android.domain.repository.UserRepository
 import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.util.SUCCESS
 import kotlinx.coroutines.coroutineScope
 
-class UserRepository(
+class UserRepositoryImpl(
     private val remoteDataSource: UserDataSource,
     private val localDataSource: UserDataSource,
     private val userDao: UserDao
-) {
-    suspend fun getUsers(): Pair<List<User>, String> {
+) : UserRepository {
+    override suspend fun getUsers(): Pair<List<User>, String> {
         var response = remoteDataSource.getUsers()
 
         if (response.second != SUCCESS)

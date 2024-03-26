@@ -3,18 +3,19 @@ package com.picpay.desafio.android.data
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import com.picpay.desafio.android.data.local.dao.UserDao
+import com.picpay.desafio.android.domain.repository.UserRepository
 import com.picpay.desafio.android.factory.UserFactory
 import com.picpay.desafio.android.util.SUCCESS
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
-class UserRepositoryTest {
+class UserRepositoryImplTest {
 
     private val remoteDataSource = mock<UserDataSource>()
     private val localUserDataSource = mock<UserDataSource>()
     private val userDao = mock<UserDao>()
-    private val userRepository = UserRepository(remoteDataSource, localUserDataSource, userDao)
+    private val userRepository = UserRepositoryImpl(remoteDataSource, localUserDataSource, userDao)
 
     @Test
     fun getUsers_from_remote_return_list() {

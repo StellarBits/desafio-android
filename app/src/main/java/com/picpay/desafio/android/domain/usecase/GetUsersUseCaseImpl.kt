@@ -1,6 +1,6 @@
 package com.picpay.desafio.android.domain.usecase
 
-import com.picpay.desafio.android.data.UserRepository
+import com.picpay.desafio.android.domain.repository.UserRepository
 import com.picpay.desafio.android.domain.model.User
 
 class GetUsersUseCaseImpl(

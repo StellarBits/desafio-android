@@ -53,7 +53,9 @@ class UserListFragmentTest {
 
         private val successResponse by lazy {
             val body =
-                "[{\"id\":1001,\"name\":\"Eduardo Santos\",\"img\":\"https://randomuser.me/api/portraits/men/9.jpg\",\"username\":\"@eduardo.santos\"}]"
+                "[{\"id\":1001,\"name\":\"Eduardo Santos\",\"img\":" +
+                        "\"https://randomuser.me/api/portraits/men/9.jpg\"," +
+                        "\"username\":\"@eduardo.santos\"}]"
 
             MockResponse()
                 .setResponseCode(200)

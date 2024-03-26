@@ -1,5 +1,6 @@
 package com.picpay.desafio.android.presentation.userlist
 
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.mock
@@ -11,6 +12,7 @@ import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.domain.usecase.GetUsersUseCase
 import com.picpay.desafio.android.factory.UserFactory
 import com.picpay.desafio.android.util.SUCCESS
+import com.picpay.desafio.android.util.UNKNOWN_ERROR
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -44,9 +46,13 @@ class UserListViewModelTest {
         testDispatcher.run {
             runTest {
                 // Given | Arrange
-                val expectedUsers = Pair(UserFactory.users, SUCCESS)
+                val nullUser1 = mock<User>() // Usuário com campos nulos
+                val nullUser2 = mock<User>() // Usuário com campos nulos
+                val nullUsers = listOf(nullUser1, nullUser2) // Lista não nula
 
-                whenever(getUsersUseCase()).thenReturn(expectedUsers)
+                val expectedUsers = Pair(nullUsers, SUCCESS)
+
+                whenever(getUsersUseCase()).thenReturn(expectedUsers) // Esperado uma lista vazia como "success"
 
                 viewModel.usersList.observeForever(usersListObserver)
 
